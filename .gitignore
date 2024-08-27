@@ -1,18 +1,29 @@
-# Ignore virtual environment directory
-.venv/
+# Ignore the virtual environment directory
+venv/
 
-# Ignore Python cache directories
+# Ignore Python cache files
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Ignore environment variables file
+# Ignore environment variable files
 .env
+
+# Ignore log files
+*.log
+
+# Ignore compiled files
+*.pyc
 
 # Ignore PDF files
 *.pdf
 
-# Ignore other common files
-*.log
-*.sqlite3
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Ignore system files
 .DS_Store
+Thumbs.db
+
+# Ignore the Procfile if it's not needed in the repository
+Procfile
