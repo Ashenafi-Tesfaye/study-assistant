@@ -12,12 +12,30 @@ st.markdown(
         text-align: center;
         width: 100%;
     }
+    .subtitle {
+        font-size: 20px;
+        font-weight: normal;
+        text-align: center;
+        width: 100%;
+        color: gray;
+    }
+    .response {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="title">CCP PSA Integration Guide Assistant</div>', unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div class="title">Chatting with Obsolete Software Requirements by Wnuk, Gorschek and Zahda</div>
+    <div class="subtitle">SWEN 645 9041 Software Requirements</div>
+    """,
+    unsafe_allow_html=True
+)
 
 with st.form(key='my_form'):
      # Input field for the OpenAI API key
@@ -37,7 +55,7 @@ with st.form(key='my_form'):
             
             response = lch.get_response_from_query(lch.vector_store, query)
             st.subheader("Response:")
-            st.text(textwrap.fill(response, width=100))
+            st.markdown(f'<div class="response">{textwrap.fill(response, width=100)}</div>', unsafe_allow_html=True)
         except Exception as e:
             st.write("An error occurred. Please try again.")
             st.write(e)

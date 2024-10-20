@@ -17,8 +17,8 @@ if not openai_api_key:
 embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
 
 # Define the path to the directory containing PDF files
-pdf_directory_path = "docs"
-
+# pdf_directory_path = "docs"
+pdf_directory_path = "docs2"
 # Function to load and process PDF data from all files in the directory
 def load_pdf_data():
     all_pages = []
@@ -44,7 +44,7 @@ def get_response_from_query(db, query, k=4):
     docs = db.similarity_search(query, k=k)
     docs_page_content = " ".join([doc.page_content for doc in docs])
 
-    llm = OpenAI(temperature=0.5, openai_api_key=openai_api_key)
+    llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
     prompt = PromptTemplate(
         input_variables=["questions", "docs"],
         template="""You are a helpful assistant that can answer questions based on the provided data.
