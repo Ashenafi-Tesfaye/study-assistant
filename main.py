@@ -1,6 +1,11 @@
 import langchain_helper as lch 
 import streamlit as st
 import textwrap
+import os
+from dotenv import load_dotenv
+
+# Load the .env file
+load_dotenv()
 
 # Adjusting the title width using markdown and custom CSS
 st.markdown(
@@ -20,14 +25,13 @@ st.markdown(
         color: gray;
     }
     .response {
-    white-space: pre-wrap;
-    word-wrap: break-word;
+        white-space: pre-wrap;
+        word-wrap: break-word;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
-
 
 st.markdown(
     """
@@ -37,10 +41,23 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Load the OpenAI API key from Streamlit secrets or fallback to .env
+openai_api_key = os.getenv("OPENAI_API_KEY")
+try:
+    openai_api_key = st.secrets["OPENAI_API_KEY"]
+except Exception:
+    pass
+
+if not openai_api_key:
+    raise ValueError("OpenAI API key is missing. Please set it in the environment variables or Streamlit secrets.")
+
+# Load the PDF data and create the vector store at the start
+documents = lch.load_pdf_data("docs2")
+if not documents:
+    raise ValueError("No documents were loaded. Please check the PDF directory path and files.")
+vector_store = lch.create_vector_store(documents, openai_api_key=openai_api_key)
+
 with st.form(key='my_form'):
-     # Input field for the OpenAI API key
-    openai_api_key = st.text_input("Please enter your OpenAI API key", type="password")
-    
     query = st.text_area(label='Please enter your question', key='query')
     submitted = st.form_submit_button(label='Submit')
 
@@ -53,7 +70,7 @@ with st.form(key='my_form'):
             # Validate the API key
             lch.validate_openai_api_key(openai_api_key)
             
-            response = lch.get_response_from_query(lch.vector_store, query)
+            response = lch.get_response_from_query(vector_store, query, openai_api_key=openai_api_key)
             st.subheader("Response:")
             st.markdown(f'<div class="response">{textwrap.fill(response, width=100)}</div>', unsafe_allow_html=True)
         except Exception as e:

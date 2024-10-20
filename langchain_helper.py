@@ -5,22 +5,9 @@ from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain_community.document_loaders import PyPDFLoader
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
-
-# Load your OpenAI API key from the environment
-openai_api_key = os.getenv("OPENAI_API_KEY")
-if not openai_api_key:
-    raise ValueError("OpenAI API key is missing. Please set it in the environment variables.")
-
-embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-
-# Define the path to the directory containing PDF files
-# pdf_directory_path = "docs"
-pdf_directory_path = "docs2"
 # Function to load and process PDF data from all files in the directory
-def load_pdf_data():
+def load_pdf_data(pdf_directory_path):
     all_pages = []
     for filename in os.listdir(pdf_directory_path):
         if filename.endswith(".pdf"):
@@ -31,7 +18,8 @@ def load_pdf_data():
     return all_pages
 
 # Function to create a vector store from the documents
-def create_vector_store(documents):
+def create_vector_store(documents, openai_api_key):
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     docs = text_splitter.split_documents(documents)
     if not docs:
@@ -40,7 +28,7 @@ def create_vector_store(documents):
     return vector_store
 
 # Function to query the vector store
-def get_response_from_query(db, query, k=4):
+def get_response_from_query(db, query, openai_api_key, k=4):
     docs = db.similarity_search(query, k=k)
     docs_page_content = " ".join([doc.page_content for doc in docs])
 
@@ -74,12 +62,4 @@ def get_response_from_query(db, query, k=4):
 def validate_openai_api_key(openai_api_key):
     if openai_api_key is None or openai_api_key == "":
         raise Exception("OpenAI API key is missing.")
-    if openai_api_key != os.getenv("OPENAI_API_KEY"):
-        raise Exception("Invalid OpenAI API key.")
     return True
-
-# Load the PDF data and create the vector store at the start
-documents = load_pdf_data()
-if not documents:
-    raise ValueError("No documents were loaded. Please check the PDF directory path and files.")
-vector_store = create_vector_store(documents)
