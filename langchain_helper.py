@@ -12,7 +12,7 @@ def load_pdf_data(pdf_directory_path):
     for filename in os.listdir(pdf_directory_path):
         if filename.endswith(".pdf"):
             pdf_file_path = os.path.join(pdf_directory_path, filename)
-            loader = PyPDFLoader(pdf_file_path, extract_images=True)
+            loader = PyPDFLoader(pdf_file_path)  # Removed extract_images=True
             pages = loader.load_and_split()
             all_pages.extend(pages)
     return all_pages
@@ -32,7 +32,7 @@ def get_response_from_query(db, query, openai_api_key, k=4):
     docs = db.similarity_search(query, k=k)
     docs_page_content = " ".join([doc.page_content for doc in docs])
 
-    llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
+    llm = OpenAI(temperature=0, openai_api_key=openai_api_key, max_tokens=1500)
     prompt = PromptTemplate(
         input_variables=["questions", "docs"],
         template="""You are a helpful assistant that can answer questions based on the provided data.

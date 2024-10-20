@@ -48,7 +48,7 @@ if not openai_api_key:
     raise ValueError("OpenAI API key is missing. Please set it in the environment variables or Streamlit secrets.")
 
 # Load the PDF data and create the vector store at the start
-documents = lch.load_pdf_data("docs2")
+documents = lch.load_pdf_data("docs")
 if not documents:
     raise ValueError("No documents were loaded. Please check the PDF directory path and files.")
 vector_store = lch.create_vector_store(documents, openai_api_key=openai_api_key)
