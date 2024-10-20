@@ -27,3 +27,6 @@ Thumbs.db
 
 # Ignore the Procfile if it's not needed in the repository
 Procfile
+
+# Ignore Streamlit secrets directory
+.streamlit/

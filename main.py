@@ -41,11 +41,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Load the OpenAI API key from environment variables
-openai_api_key = os.getenv("OPENAI_API_KEY")
+# Load the OpenAI API key from Streamlit secrets or fallback to .env
+openai_api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
 
 if not openai_api_key:
-    raise ValueError("OpenAI API key is missing. Please set it in the environment variables.")
+    raise ValueError("OpenAI API key is missing. Please set it in the environment variables or Streamlit secrets.")
 
 # Load the PDF data and create the vector store at the start
 documents = lch.load_pdf_data("docs2")
